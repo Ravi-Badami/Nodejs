@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
+const { adminAuth } = require('./middlewares/auth');
+const { userAuth } = require('./middlewares/user');
 app.listen(3000);
 
+app.use('/admin', adminAuth);
 app.get('/user-:id-:name', (req, res) => {
   res.send(req.params);
 });
@@ -18,9 +21,9 @@ app.get(/.*fly$/, (req, res) => {
 /*
  * Anything that contains a works
  */
-app.get(/a/, (req, res) => {
-  res.send('/a/ is working');
-});
+// app.get(/a/, (req, res) => {
+//   res.send('/a/ is working');
+// });
 /*
  * similar to ab?c but here its (bc) both together
  */
@@ -77,3 +80,12 @@ app.use(
     // res.send('second one');
   }
 );
+app.get('/admin/data', (req, res) => {
+  res.send('All the data for admin');
+});
+
+/*
+ * userAuth function can be directly written like this also*/
+app.get('/user/data', userAuth, (req, res) => {
+  res.send('All the user data');
+});
