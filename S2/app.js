@@ -4,6 +4,16 @@ const { adminAuth } = require('./middlewares/auth');
 const { userAuth } = require('./middlewares/user');
 app.listen(3000);
 
+app.get('/user/tryerror', (req, res) => {
+  try {
+    throw new Error('ravi');
+    res.send('trying error');
+  } catch (error) {
+    res.status(501).send('handling error');
+  }
+  // console.log('user error');
+});
+
 app.use('/admin', adminAuth);
 app.get('/user-:id-:name', (req, res) => {
   res.send(req.params);
@@ -88,4 +98,12 @@ app.get('/admin/data', (req, res) => {
  * userAuth function can be directly written like this also*/
 app.get('/user/data', userAuth, (req, res) => {
   res.send('All the user data');
+});
+/*
+ * handles all type of errors in the routes*/
+app.use('/', (err, req, res, next) => {
+  console.log('global error');
+  if (err) {
+    res.status(501).send(err.message);
+  }
 });
