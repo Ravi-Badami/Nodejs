@@ -1,9 +1,24 @@
 const express = require('express');
+const { connectDB } = require('./config/database');
 const app = express();
 const { adminAuth } = require('./middlewares/auth');
 const { userAuth } = require('./middlewares/user');
-app.listen(3000);
 
+console.log('1. Before app.listen()');
+
+connectDB()
+  .then(() => {
+    console.log('connected successfully');
+    app.listen(3000, () => {
+      console.log('listening to the port 3000');
+    });
+  })
+  .catch((err) => {
+    console.log('cannot connect db because', err.message);
+  });
+
+console.log('2. After app.listen()');
+ 
 app.get('/user/tryerror', (req, res) => {
   try {
     throw new Error('ravi');

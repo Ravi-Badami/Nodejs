@@ -29,3 +29,10 @@
 - write a dummy auth middleware for admin
 - write a dummy auth middleware for all user routes,expect /user/login
 - error handling using app.use(err,req,res,nexts)
+
+- create a free cluster on Mongodb website
+- install mongoose
+- connect you application to database
+- Connect the database to first before start listening to the port
+- Create a user schema
+- 
