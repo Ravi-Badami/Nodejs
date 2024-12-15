@@ -34,5 +34,6 @@
 - install mongoose
 - connect you application to database
 - Connect the database to first before start listening to the port
-- Create a user schema
-- 
+- Create a user schema and model
+- create signup API to add data to database
+- make api calls using API calls
