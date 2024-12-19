@@ -5,16 +5,23 @@ const { adminAuth } = require('./middlewares/auth');
 const { userAuth } = require('./middlewares/user');
 const User = require('./models/user');
 
-app.post('/user/signup', async (req, res) => {
-  const user = new User({
-    firstName: 'ravi',
-    lastName: 'badami',
-    emailId: 'ravi@gmail.com',
-    password: 'ravi',
-    age: 33,
-    gender: 'M',
-  });
+app.use(express.json());
 
+app.post('/user/signup', async (req, res) => {
+  console.log(req.body);
+  const user = new User(req.body);
+  //const user=new User()
+  // const user = new User({
+  //   firstName: 'ravi',
+  //   lastName: 'badami',
+  //   emailId: 'ravi@gmail.com',
+  //   password: 'ravi',
+  //   age: 33,
+  //   gender: 'M',
+  // });
+
+  /*
+   * when you do this new collection will be saved in the database*/
   await user.save();
   res.send('Insterted successfully');
 });

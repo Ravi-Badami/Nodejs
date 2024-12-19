@@ -37,3 +37,5 @@
 - Create a user schema and model
 - create signup API to add data to database
 - make api calls using API calls
+
+- js object and json
