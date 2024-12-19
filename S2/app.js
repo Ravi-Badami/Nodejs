@@ -7,6 +7,46 @@ const User = require('./models/user');
 
 app.use(express.json());
 
+app.delete('/deleteUser', async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const users = await User.findByIdAndDelete(userId);
+    console.log(users);
+    res.send('user deleted successfully');
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+app.patch('/user', async (req, res) => {
+
+  try {
+    const user = await User.findByIdAndUpdate({ _id: req.body.userId }, req.body);
+    res.send('updated successfully');
+  } catch (error) {
+    res.send('something went wrong');
+  }
+});
+
+app.get('/findUser', async (req, res) => {
+  try {
+    const users = await User.findOne({ emailId: req.body.emailId });
+    console.log(users);
+    if (users === null) {
+      res.send('user not found');
+    } else {
+      res.send(users);
+    }
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+app.get('/feed', async (req, res) => {
+  const users = await User.find({});
+  res.send(users);
+});
+
 app.post('/user/signup', async (req, res) => {
   console.log(req.body);
   const user = new User(req.body);
