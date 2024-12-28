@@ -39,3 +39,24 @@
 - make api calls using API calls
 
 - js object and json
+- add the express.json() middleware to your app
+- Make your signup API dynamic to receive data from the user
+- User.findone with duplicate eamil ids, which object returned
+- API - Get user by email
+- API - Feed API -GET /feed - get all the use form the databse
+- API - Get user by Id
+- Create a database use API
+- Difference between PATCH and PUT
+- API - update a user
+- Explore the mongoose documentation for model methods
+- what are options in a modle.findOneAndUpdate method, explore more about it
+- API - UPdate the user with email ID
+
+- Explore schematypes options from the documentaion
+- Add required, unique , lowercase , min, minLength, trim
+- add default
+- create a custom validate function for gender
+- improve the DB schema - PUT all appropriate validations on each field in schema
+- add timestamps to the userSchema
+- Add API level validation on patch request and signup post api
+- Add API validation for each field
