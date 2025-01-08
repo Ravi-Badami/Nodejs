@@ -19,6 +19,25 @@ app.delete('/deleteUser', async (req, res) => {
   }
 });
 
+app.post('/login', async (req, res) => {
+  try {
+    // validateFormData(req);
+    const { emailId, password } = req.body;
+    const DbEmail = await User.findOne({ emailId: emailId });
+    if (!DbEmail) {
+      throw new Error('User not found');
+    }
+    const isPasswordSame = await bcrypt.compare(password, DbEmail.password);
+    if (isPasswordSame) {
+      res.send('password correct logged in');
+    } else {
+      res.send('password is wrong');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
 app.patch('/user/:userId', async (req, res) => {
   const userId = req.params?.userId;
   const data = req.body;

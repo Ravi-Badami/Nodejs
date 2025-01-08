@@ -66,4 +66,4 @@
 
 - validator package to validate the incoming data
 - bcrypt package to encrypt the password
-
+- bcrypt.compare inorder to check whether password matches or not
