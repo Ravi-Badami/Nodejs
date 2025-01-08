@@ -4,7 +4,8 @@ const app = express();
 const { adminAuth } = require('./middlewares/auth');
 const { userAuth } = require('./middlewares/user');
 const User = require('./models/user');
-
+const { validateFormData } = require('./utils/validation');
+const bcrypt = require('bcrypt');
 app.use(express.json());
 
 app.delete('/deleteUser', async (req, res) => {
@@ -62,22 +63,25 @@ app.get('/feed', async (req, res) => {
 });
 
 app.post('/user/signup', async (req, res) => {
-  console.log(req.body);
-  const user = new User(req.body);
-  //const user=new User()
-  // const user = new User({
-  //   firstName: 'ravi',
-  //   lastName: 'badami',
-  //   emailId: 'ravi@gmail.com',
-  //   password: 'ravi',
-  //   age: 33,
-  //   gender: 'M',
-  // });
+  const { firstName, emailId, password, gender } = req.body;
 
-  /*
-   * when you do this new collection will be saved in the database*/
-  await user.save();
-  res.send('Insterted successfully');
+  try {
+    validateFormData(req);
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      firstName,
+      emailId,
+      password: passwordHash,
+      gender,
+    });
+
+    // Save the user to the database
+    await user.save();
+    res.send('Inserted successfully');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 console.log('1. Before app.listen()');

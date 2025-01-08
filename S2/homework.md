@@ -60,3 +60,10 @@
 - add timestamps to the userSchema
 - Add API level validation on patch request and signup post api
 - Add API validation for each field
+- DATA Sanitizing - Add API validation for each field
+- install validator
+- Explore validator library funcation and use validator functions for passward ,email
+
+- validator package to validate the incoming data
+- bcrypt package to encrypt the password
+
