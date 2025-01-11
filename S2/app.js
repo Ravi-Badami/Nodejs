@@ -6,7 +6,11 @@ const { userAuth } = require('./middlewares/user');
 const User = require('./models/user');
 const { validateFormData } = require('./utils/validation');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwtWebToken = require('jsonwebtoken');
+
 app.use(express.json());
+app.use(cookieParser());
 
 app.delete('/deleteUser', async (req, res) => {
   const userId = req.body.userId;
@@ -22,13 +26,16 @@ app.delete('/deleteUser', async (req, res) => {
 app.post('/login', async (req, res) => {
   try {
     // validateFormData(req);
+
     const { emailId, password } = req.body;
     const DbEmail = await User.findOne({ emailId: emailId });
     if (!DbEmail) {
-      throw new Error('User not found');
+      throw new Error('Invalid credentials');
     }
     const isPasswordSame = await bcrypt.compare(password, DbEmail.password);
     if (isPasswordSame) {
+      const token = await jwtWebToken.sign({ _id: DbEmail._id }, 'blablabla');
+      res.cookie('token', token);
       res.send('password correct logged in');
     } else {
       res.send('password is wrong');
@@ -36,6 +43,14 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
+});
+app.get('/profile', async (req, res) => {
+  const { token } = await req.cookies;
+  const verifyToken = await jwtWebToken.verify(token, 'blablabla');
+  const foundUser = await User.findById(verifyToken);
+  console.log(foundUser);
+  // console.log(token);
+  res.send('cookie found');
 });
 
 app.patch('/user/:userId', async (req, res) => {

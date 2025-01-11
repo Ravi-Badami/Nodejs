@@ -67,3 +67,10 @@
 - validator package to validate the incoming data
 - bcrypt package to encrypt the password
 - bcrypt.compare inorder to check whether password matches or not
+
+- isntall cookie-parser
+- just send a dummy cookie to user
+- create GET /profile API and check if you get the cookie back
+- install jsonwebtoken
+- IN login API after email and password validation, create a Jwt token and send it to user in cookie
+- read the cookies inside your profile API and find the logged in user 
