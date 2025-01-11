@@ -8,6 +8,7 @@ const { validateFormData } = require('./utils/validation');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const jwtWebToken = require('jsonwebtoken');
+const { userCookieAuth } = require('./middlewares/auth');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -44,11 +45,14 @@ app.post('/login', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
-app.get('/profile', async (req, res) => {
-  const { token } = await req.cookies;
-  const verifyToken = await jwtWebToken.verify(token, 'blablabla');
-  const foundUser = await User.findById(verifyToken);
-  console.log(foundUser);
+
+app.post('/sendConnectionRequest', userCookieAuth, (req, res) => {
+  res.send('The request connectino is sent by ' + req.user.firstName);
+});
+
+app.get('/profile', userCookieAuth, async (req, res) => {
+  const user = req.user;
+  console.log(user);
   // console.log(token);
   res.send('cookie found');
 });
