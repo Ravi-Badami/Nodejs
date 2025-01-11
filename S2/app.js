@@ -33,9 +33,9 @@ app.post('/login', async (req, res) => {
     if (!DbEmail) {
       throw new Error('Invalid credentials');
     }
-    const isPasswordSame = await bcrypt.compare(password, DbEmail.password);
+    const isPasswordSame = await DbEmail.validatePassword(password);
     if (isPasswordSame) {
-      const token = await jwtWebToken.sign({ _id: DbEmail._id }, 'blablabla');
+      const token = await DbEmail.getJWT();
       res.cookie('token', token);
       res.send('password correct logged in');
     } else {
