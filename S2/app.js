@@ -1,127 +1,23 @@
 const express = require('express');
 const { connectDB } = require('./config/database');
 const app = express();
-const { adminAuth } = require('./middlewares/auth');
-const { userAuth } = require('./middlewares/user');
 const User = require('./models/user');
-const { validateFormData } = require('./utils/validation');
-const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
-const jwtWebToken = require('jsonwebtoken');
-const { userCookieAuth } = require('./middlewares/auth');
+const { authRoute } = require('./routes/auth');
+const { profileRoute } = require('./routes/profile');
+const { requestRoute } = require('./routes/request');
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.delete('/deleteUser', async (req, res) => {
-  const userId = req.body.userId;
-  try {
-    const users = await User.findByIdAndDelete(userId);
-    console.log(users);
-    res.send('user deleted successfully');
-  } catch (error) {
-    res.send(error.message);
-  }
-});
-
-app.post('/login', async (req, res) => {
-  try {
-    // validateFormData(req);
-
-    const { emailId, password } = req.body;
-    const DbEmail = await User.findOne({ emailId: emailId });
-    if (!DbEmail) {
-      throw new Error('Invalid credentials');
-    }
-    const isPasswordSame = await DbEmail.validatePassword(password);
-    if (isPasswordSame) {
-      const token = await DbEmail.getJWT();
-      res.cookie('token', token);
-      res.send('password correct logged in');
-    } else {
-      res.send('password is wrong');
-    }
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-app.post('/sendConnectionRequest', userCookieAuth, (req, res) => {
-  res.send('The request connectino is sent by ' + req.user.firstName);
-});
-
-app.get('/profile', userCookieAuth, async (req, res) => {
-  const user = req.user;
-  console.log(user);
-  // console.log(token);
-  res.send('cookie found');
-});
-
-app.patch('/user/:userId', async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body;
-
-  try {
-    if (data.skills.length > 10) {
-      throw new Error('Skills cannot be more then 10');
-    }
-    const UPDATE_ALLOWED = ['skills', 'gender', 'photoUrl', 'about'];
-    const isAllowed = Object.keys(data).every((k) => UPDATE_ALLOWED.includes(k));
-
-    if (!isAllowed) {
-      throw new Error('Update not allowed');
-    }
-    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
-      returnDocument: 'after',
-      runValidators: true,
-    });
-    res.send('updated successfully');
-  } catch (error) {
-    res.send('Cannot update' + error.message);
-  }
-});
-
-app.get('/findUser', async (req, res) => {
-  try {
-    const users = await User.findOne({ emailId: req.body.emailId });
-    console.log(users);
-    if (users === null) {
-      res.send('user not found');
-    } else {
-      res.send(users);
-    }
-  } catch (error) {
-    res.send(error.message);
-  }
-});
+app.use('/', authRoute);
+app.use('/', profileRoute);
+app.use('/', requestRoute);
 
 app.get('/feed', async (req, res) => {
   const users = await User.find({});
   res.send(users);
 });
-
-app.post('/user/signup', async (req, res) => {
-  const { firstName, emailId, password, gender } = req.body;
-
-  try {
-    validateFormData(req);
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      firstName,
-      emailId,
-      password: passwordHash,
-      gender,
-    });
-
-    // Save the user to the database
-    await user.save();
-    res.send('Inserted successfully');
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
 console.log('1. Before app.listen()');
 app.use('/', (err, req, res, next) => {
   console.log('global error');

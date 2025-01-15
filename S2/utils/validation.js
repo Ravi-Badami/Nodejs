@@ -12,4 +12,20 @@ const validateFormData = (user) => {
     throw new Error('Password should contain min 8 letters,Uppercase,Lowercase,Special character');
   }
 };
-module.exports = { validateFormData };
+
+const validateEditFormData = (user) => {
+  const allowedFields = [
+    'firstName',
+    'lastName',
+    'age',
+    'gender',
+    'photoUrl',
+    'emailId',
+    'about',
+    'skills',
+  ];
+  const isAllowed = Object.keys(user.body).every((field) => allowedFields.includes(field));
+  return isAllowed;
+};
+
+module.exports = { validateFormData, validateEditFormData };
