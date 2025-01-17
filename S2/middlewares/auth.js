@@ -15,9 +15,9 @@ const userCookieAuth = async (req, res, next) => {
       throw new Error('token not found');
     }
     const userId = jwt.verify(token, 'blablabla');
-    console.log(userId);
+
     const user = await User.findById(userId);
-    console.log('this is the user id', User.findById({ id: '6782b05e914235a8fa061f7d' }));
+
     if (!user) {
       throw new Error('User not found');
     }
