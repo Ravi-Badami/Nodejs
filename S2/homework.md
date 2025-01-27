@@ -84,3 +84,8 @@
 - Create routes folder for managing auth,prifle,request routers
 - Create authRouter , profileRouter,requsetROuter
 - Import these routers in app.js
+
+- create Connection api
+- check if status is ignore and requested
+- check if the user is present
+- put validation that the logged in user cant send the request to himself

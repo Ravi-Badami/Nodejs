@@ -3,12 +3,13 @@ const express = require('express');
 const profileRoute = express.Router();
 const { userCookieAuth } = require('../middlewares/auth');
 const { validateEditFormData } = require('../utils/validation');
+const User = require('../models/user');
 
 profileRoute.get('/profile', userCookieAuth, async (req, res) => {
   const user = req.user;
   console.log(user);
   // console.log(token);
-  res.send('cookie found');
+  res.json({ message: 'user found', user: user });
 });
 
 profileRoute.patch('/user/:userId', async (req, res) => {
