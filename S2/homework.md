@@ -89,3 +89,4 @@
 - check if status is ignore and requested
 - check if the user is present
 - put validation that the logged in user cant send the request to himself
+- How to put index in database ( as collection grows queries will become interesting and query will become slow for this we need indexing)

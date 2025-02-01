@@ -42,4 +42,32 @@ requestRoute.post('/request/send/:status/:toUserId', userCookieAuth, async (req,
     res.send('request.js:' + err.message);
   }
 });
+
+requestRoute.post('/request/review/:status/:requestId', userCookieAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    const { status, requestId } = req.params;
+    const statusAllowed = ['accepted', 'rejected'];
+    const isStatusAllowed = statusAllowed.includes(req.params.status);
+    if (!isStatusAllowed) {
+      throw new Error('invalid status');
+    }
+    const isConnectionPresent = await ConnectionRequest.findOne({
+      _id: requestId,
+      status: 'interested',
+      toUserId: user._id,
+    });
+
+    if (!isConnectionPresent) {
+      return res.send('The connection is not present');
+    }
+    isConnectionPresent.status = status;
+
+    res.send(`you have ${status} the request of ${user.firstName}`);
+
+    const data = await isConnectionPresent.save();
+  } catch (err) {
+    return res.status(404).send('review error' + err.message);
+  }
+});
 module.exports = { requestRoute };
